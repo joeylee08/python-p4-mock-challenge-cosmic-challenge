@@ -37,11 +37,26 @@ class Scientist(db.Model, SerializerMixin):
     name = db.Column(db.String)
     field_of_study = db.Column(db.String)
 
+    
+    
     # Add relationship
 
     # Add serialization rules
 
     # Add validation
+    @validates('name')
+    def validate_name(self, _, value):
+        if not value:
+            raise ValueError('Name must be provided.')
+        else:
+            return value
+
+    @validates('field_of_study')
+    def validate_field_of_study(self, _, value):
+        if not value:
+            raise ValueError('Field of study must be provided.')
+        else:
+            return value
 
 
 class Mission(db.Model, SerializerMixin):
@@ -49,12 +64,38 @@ class Mission(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    scientist_id = db.Column(db.String, db.ForeignKey('scientists.id'))
+    planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
 
     # Add relationships
 
     # Add serialization rules
 
     # Add validation
+    @validates('name')
+    def validate_name(self, _, value):
+        if not value:
+            raise ValueError('Name must be provided.')
+        else:
+            return value
+        
+    @validates('scientist_id')
+    def validate_scientist_id(self, _, value):
+        if not value:
+            raise ValueError("Scientist Id must be provided.")
+        elif not isinstance(value, int):
+            raise ValueError("Scientist Id must be an integer.")
+        else:
+            return value
+        
+    @validates('planet_id')
+    def validate_planet_id(self, _, value):
+        if not value:
+            raise ValueError("Planet Id must be provided.")
+        elif not isinstance(value, int):
+            raise ValueError("Planet Id must be an integer.")
+        else:
+            return value
 
 
 # add any models you may need.
